@@ -25,8 +25,16 @@ function Login() {
   return (
     <div className='formContainer'>
       <div className="formWrapper">
-        <span className="logo">BabbleBridge - Connecting the World in Real-Time</span>
-        <span className="title">Login</span>
+        <span className="logo">
+          <p id='logo-main'>
+            BabbleBridge
+          </p>
+          <p id='logo-sub'>
+            Connecting the World in Real-Time
+          </p>
+        </span>
+        {/* <span className="logo">BabbleBridge - Connecting the World in Real-Time</span> */}
+        <span className="title">Log In</span>
         <form onSubmit={handleLogin}>
           <div className="form-floating">
             <input type="email" className="form-control" id="floatingEmail" placeholder="name@example.com" />

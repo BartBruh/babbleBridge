@@ -63,7 +63,14 @@ function Register() {
   return (
     <div className='formContainer'>
       <div className="formWrapper">
-        <span className="logo">BabbleBridge - Connecting the World in Real-Time</span>
+        <span className="logo">
+          <p id='logo-main'>
+            BabbleBridge
+          </p>
+          <p id='logo-sub'>
+            Connecting the World in Real-Time
+          </p>
+        </span>
         <span className="title">Register</span>
         <form onSubmit={handleSubmit}>
           <div className="form-floating">
