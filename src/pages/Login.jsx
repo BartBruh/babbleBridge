@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { auth } from '../firebase';
 
 function Login() {
   const [err, setErr] = useState(false);
@@ -14,13 +14,14 @@ function Login() {
     const password = ev.target[1].value;
 
     try {
-      signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, email, password);
       navigate("/");
     } catch (error) {
+      console.log("Error: " + error);
       setErr(true);
     }
   }
-  
+
   return (
     <div className='formContainer'>
       <div className="formWrapper">
@@ -36,7 +37,7 @@ function Login() {
             <label htmlFor="floatingPassword">Password</label>
           </div>
           <button className="btn btn-primary">Log In</button>
-          { err && <span>Something went wrong</span> }
+          {err && <span>Something went wrong</span>}
           <p>
             Don't have an account?&nbsp;
             <Link to='/register'>Register</Link>

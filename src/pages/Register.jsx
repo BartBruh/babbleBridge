@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { auth, db, storage } from '../../firebase';
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth, db, storage } from '../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 
 function Register() {
   const [err, setErr] = useState(false);
 
-  const navigate = useNavigate();
+  const [userCreated, setUserCreated] = useState(false);
 
   const handleSubmit = async (ev) => {
     ev.preventDefault();
@@ -25,26 +25,37 @@ function Register() {
 
       uploadTask.on(
         (error) => {
+          console.log("Error: " + error);
           setErr(true);
         },
         () => {
+          console.log("display picture upload success");
+
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+
             await updateProfile(res.user, {
               displayName,
               photoURL: downloadURL
             })
+            console.log("display picture link added to user profile");
+
             await setDoc(doc(db, "users", res.user.uid), {
               uid: res.user.uid,
               displayName,
               email,
               photoURL: downloadURL,
             });
+            console.log("user info added to users collection");
+
             await setDoc(doc(db, "userChats", res.user.uid), {})
-            navigate("./");
           });
+          console.log("account created successfully");
+          setUserCreated(true);
+          setErr(false);
         }
       );
     } catch (error) {
+      console.log("Error: " + error);
       setErr(true);
     }
   }
@@ -75,7 +86,8 @@ function Register() {
               Add an avatar</label>
           </div>
           <button className="btn btn-primary">Sign Up</button>
-          { err && <span>Something went wrong</span> }
+          {err && <span>Something went wrong</span>}
+          {userCreated && <span><br>User created successfully!<br />Please login now</br></span>}
           <p>Already have an account?&nbsp;
             <Link to='/login'>Login</Link>
           </p>

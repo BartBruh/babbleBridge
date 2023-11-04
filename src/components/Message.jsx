@@ -17,8 +17,8 @@ function Message({ message }) {
       <div className="messageInfo">
         <img src={message.senderId === currentUser.uid ? currentUser.photoURL : data.user.photoURL}
           alt="" />
-        {/* <span>{message.date.toString()}</span> */}
-        <span>Just now</span>
+        <span>{message.date.toDate().toDateString().slice(4, 10)}</span>
+        <span>{message.date.toDate().toTimeString().slice(0, 5)}</span>
       </div>
       <div className="messageContent">
         <p>{message.text}</p>

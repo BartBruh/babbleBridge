@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/ChatContext';
 import { Timestamp, arrayUnion, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
-import { db, storage } from '../../firebase';
+import { db, storage } from '../firebase';
 import { v4 as uuid } from 'uuid';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 
@@ -22,6 +22,7 @@ function Input() {
         const uploadTask = uploadBytesResumable(storageRef, img);
         uploadTask.on(
           (error) => {
+            console.log("Error: " + error);
             setErr(true);
           },
           () => {
@@ -51,7 +52,7 @@ function Input() {
         console.log("updated text without image");
       }
 
-      console.log("adding last message times");
+      console.log("adding last message timestamp");
       await updateDoc(doc(db, "userChats", currentUser.uid), {
         [data.chatId + ".lastMessage"]: { text },
         [data.chatId + ".date"]: serverTimestamp()
@@ -60,9 +61,9 @@ function Input() {
         [data.chatId + ".lastMessage"]: { text },
         [data.chatId + ".date"]: serverTimestamp()
       });
-      console.log("added last message times");
+      console.log("added last message timestamp");
     } catch (error) {
-      console.log(error);
+      console.log("Error: " + error);
       setErr(true);
     }
 

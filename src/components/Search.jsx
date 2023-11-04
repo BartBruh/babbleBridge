@@ -1,6 +1,6 @@
 import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
 import React, { useContext, useState } from 'react'
-import { db } from '../../firebase';
+import { db } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
 
 function Search() {
@@ -17,11 +17,21 @@ function Search() {
 
     try {
       const querySnapshot = await getDocs(q);
+      let found = false;
       querySnapshot.forEach((doc) => {
+        found = true;
         setUser(doc.data());
         console.log("found searched user")
       });
+      if (!found) {
+        setUser(null);
+        setErr(true);
+        console.log("searched user not found")
+      } else {
+        setErr(false);
+      }
     } catch (err) {
+      console.log("Error: " + err);
       setErr(true);
     }
   }
@@ -57,7 +67,7 @@ function Search() {
           [combinedId + ".date"]: serverTimestamp()
         })
         await updateDoc(doc(db, "userChats", user.uid), {
-          [combinedId.uid + ".userInfo"]: {
+          [combinedId + ".userInfo"]: {
             uid: currentUser.uid,
             displayName: currentUser.displayName,
             photoURL: currentUser.photoURL
@@ -67,8 +77,7 @@ function Search() {
         console.log("created new chats for both users");
       }
     } catch (error) {
-      console.log("had an error");
-      console.log(error);
+      console.log("Error: " + error);
       setErr(true);
     }
     setUser(null);
@@ -79,7 +88,7 @@ function Search() {
     <div className='search'>
       <div className="searchForm">
         <input type="text"
-          placeholder='Find a user'
+          placeholder='Search for users...'
           onKeyDown={handleKey}
           onChange={e => setUsername(e.target.value)}
           value={username}

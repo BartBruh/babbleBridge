@@ -5,6 +5,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import { useContext } from "react";
 import { AuthContext } from "./context/AuthContext";
+import Logout from "./pages/Logout";
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
             </ProtectedRoute>} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} exact />
+          <Route path="/logout" element={<Logout />} exact />
         </Route>
       </Routes>
     </BrowserRouter>
