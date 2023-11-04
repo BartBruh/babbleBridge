@@ -12,7 +12,7 @@ function Navbar() {
   
   return (
     <div className='navbar'>
-      <span className="logo">GlotSync</span>
+      <span className="logo">BabbleBridge</span>
       <div className="user">
         <img src={currentUser.photoURL} alt="" />
         <span>{currentUser.displayName}</span>

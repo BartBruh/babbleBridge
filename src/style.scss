@@ -79,7 +79,6 @@ body {
   input,
   label {
     background-color: transparent;
-    // color: gray;
   }
 
   .formWrapper {
@@ -93,10 +92,19 @@ body {
 
     .logo {
       font-weight: bold;
-      font-size: 20px;
+      font-size: 30px;
+      font-family: 'Courgette', cursive;
+      margin-bottom: 10px;
+    }
+    
+    .title {
+      font-size: 25px;
+      font-weight: 500;
+      margin-bottom: 10px;
     }
 
     form {
+      margin-top: 10px;
       display: flex;
       flex-direction: column;
       gap: 15px;
@@ -117,6 +125,17 @@ body {
         }
       }
 
+      button {
+        margin-top: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        color: black;
+
+        &:hover {
+          background-color: white;
+          color: black;
+        }
+      }
+
     }
   }
 }
@@ -133,7 +152,7 @@ body {
   .container {
     padding: 0;
     margin: auto;
-    box-shadow: 0 0 20px 20px rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 20px 20px rgba(0, 0, 0, 0.2);
     background-color: rgba(0, 0, 0, 0.8);
     width: 65%;
     height: 100%;
@@ -235,9 +254,9 @@ body {
         border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 
         &:hover {
-          background-color: rgba(255, 255, 255, 0.2);
-          // background-color: white;
-          // color: black;
+          background-color: rgba(255, 255, 255, 0.3);
+          position: relative;
+          transform: scale(1.1);
         }
 
         img {
@@ -411,8 +430,8 @@ body {
           }
 
           button {
-            background-color: rgba(255, 255, 255, 0.7);
-            color: rgba(0, 0, 0, 0.8);
+            // background-color: rgba(255, 255, 255, 0.7);
+            // color: rgba(0, 0, 0, 0.8);
 
             &:hover {
               background-color: white;

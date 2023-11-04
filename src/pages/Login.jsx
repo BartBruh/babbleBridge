@@ -25,7 +25,7 @@ function Login() {
   return (
     <div className='formContainer'>
       <div className="formWrapper">
-        <span className="logo">GlotSync - Speak Globally, Chat Locally</span>
+        <span className="logo">BabbleBridge - Connecting the World in Real-Time</span>
         <span className="title">Login</span>
         <form onSubmit={handleLogin}>
           <div className="form-floating">

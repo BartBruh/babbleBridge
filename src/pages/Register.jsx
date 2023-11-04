@@ -63,7 +63,7 @@ function Register() {
   return (
     <div className='formContainer'>
       <div className="formWrapper">
-        <span className="logo">GlotSync - Speak Globally, Chat Locally</span>
+        <span className="logo">BabbleBridge - Connecting the World in Real-Time</span>
         <span className="title">Register</span>
         <form onSubmit={handleSubmit}>
           <div className="form-floating">
@@ -87,7 +87,12 @@ function Register() {
           </div>
           <button className="btn btn-primary">Sign Up</button>
           {err && <span>Something went wrong</span>}
-          {userCreated && <span><br>User created successfully!<br />Please login now</br></span>}
+          {userCreated &&
+            <span>
+              <b>User created successfully!
+                <br />Please login now
+              </ b>
+            </span>}
           <p>Already have an account?&nbsp;
             <Link to='/login'>Login</Link>
           </p>
