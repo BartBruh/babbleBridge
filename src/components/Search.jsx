@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react'
 import { db } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
 import { ChatContext } from '../context/ChatContext';
+import { OpenSidebarContext } from '../context/OpenSidebarContext';
 
 function Search() {
   const [username, setUsername] = useState("");
@@ -10,13 +11,12 @@ function Search() {
   const [err, setErr] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
-
   const { dispatch } = useContext(ChatContext);
-
+  const { setOpenSidebar } = useContext(OpenSidebarContext);
 
   const handleSearch = async () => {
     const q = query(collection(db, "users"), where("displayName", "==", username));
-    console.log("handling search");
+    // console.log("handling search");
 
     try {
       const querySnapshot = await getDocs(q);
@@ -24,12 +24,12 @@ function Search() {
       querySnapshot.forEach((doc) => {
         found = true;
         setUser(doc.data());
-        console.log("found searched user")
+        // console.log("found searched user")
       });
       if (!found) {
         setUser(null);
         setErr(true);
-        console.log("searched user not found")
+        // console.log("searched user not found")
       } else {
         setErr(false);
       }
@@ -44,13 +44,13 @@ function Search() {
   }
 
   const handleSelect = async () => {
-    console.log("selected searched user");
+    // console.log("selected searched user");
     // check whether the group (chats in firestore) exists
     // if not, create new
     const combinedId = currentUser.uid > user.uid ? user.uid + currentUser.uid : currentUser.uid + user.uid;
-    console.log(combinedId);
+    // console.log(combinedId);
     try {
-      console.log("in try block")
+      // console.log("in try block")
       const res = await getDoc(doc(db, "chats", combinedId));
       console.log(res);
 
@@ -58,7 +58,7 @@ function Search() {
         // create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
-        console.log("set combined name doc in chats")
+        // console.log("set combined name doc in chats")
 
         // create user chats
         await updateDoc(doc(db, "userChats", currentUser.uid), {
@@ -77,7 +77,7 @@ function Search() {
           },
           [combinedId + ".date"]: serverTimestamp()
         })
-        console.log("created new chats for both users");
+        // console.log("created new chats for both users");
       }
     } catch (error) {
       console.log("Error: " + error);
@@ -89,7 +89,9 @@ function Search() {
     })
     setUser(null);
     setUsername("");
+    setOpenSidebar(false);
   }
+
 
   return (
     <div className='search'>

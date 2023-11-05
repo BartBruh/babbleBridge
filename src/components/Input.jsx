@@ -23,6 +23,20 @@ function Input() {
       return;
     }
 
+    if (img && !img.type.includes("image")) {
+      setErr(true);
+      setErrMessage("File can only be an image");
+      setImg(null);
+      return;
+    }
+
+    if (img && img.size / 1024 / 1024 > 1) {
+      setErr(true);
+      setErrMessage("Image size should be less than 1MB");
+      setImg(null);
+      return;
+    }
+
     try {
       if (img) {
         const storageRef = ref(storage, uuid());
@@ -90,7 +104,7 @@ function Input() {
         onKeyDown={e => e.key === "Enter" && handleSend()}
       />
       <div className="send">
-        <input type="file" style={{ display: 'none' }} name="" id="file" onChange={e => setImg(e.target.files[0])} />
+        <input type="file" accept='image/*' style={{ display: 'none' }} name="" id="file" onChange={e => { setImg(e.target.files[0]); setErr(false); }} />
         <label htmlFor="file">
           <span className="fa-solid fa-image"></span>
         </label>

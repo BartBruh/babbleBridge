@@ -24,9 +24,11 @@ function Messages() {
     <div className='messages'>
       {
         messages.map((message, index) => (
-          <Message key={index} message={message} animate={index === messages.length - 1 && message.senderId !== currentUser.uid} />
+          <Message key={index} message={message} />
+          // <Message key={index} message={message} animate={index === messages.length - 1 && message.senderId !== currentUser.uid} />
         ))
       }
+      <Message typingAnimation="true"></Message>
     </div>
   )
 }

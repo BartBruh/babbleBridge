@@ -151,14 +151,13 @@
         color: white;
         outline: none;
         border: 1px solid white;
-        margin-bottom: 30px;
+        margin-bottom: 10px;
 
         &:hover {
           background-color: white;
           color: black;
         }
       }
-
     }
   }
 }
@@ -202,6 +201,7 @@
       position: relative;
       transition: all 0.3s ease-in-out;
       overflow-x: hidden;
+      z-index: 5;
 
       @include tablet {
         padding: 10px;
@@ -306,6 +306,10 @@
             }
           }
         }
+
+        .userChat {
+          border-top: 1px solid rgba(255, 255, 255, 0.3);
+        }
       }
 
       .chats {
@@ -379,6 +383,15 @@
       background-color: rgba(255, 255, 255, 0.05);
       padding: 20px;
       height: 100vh;
+
+      #selectChatLabel {
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+      }
 
       @include tablet {
         padding: 10px;

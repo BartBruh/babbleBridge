@@ -7,13 +7,13 @@ import { ChatContextProvider } from './context/ChatContext'
 import { OpenSidebarContextProvider } from './context/OpenSidebarContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <AuthContextProvider>
-    <ChatContextProvider>
-      <OpenSidebarContextProvider>
+  <OpenSidebarContextProvider>
+    <AuthContextProvider>
+      <ChatContextProvider>
         <React.StrictMode>
           <App />
         </React.StrictMode>,
-      </OpenSidebarContextProvider>
-    </ChatContextProvider>
-  </AuthContextProvider>
+      </ChatContextProvider>
+    </AuthContextProvider>
+  </OpenSidebarContextProvider>
 )

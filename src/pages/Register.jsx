@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db, storage } from '../firebase';
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -18,6 +18,24 @@ function Register() {
     const password = ev.target[2].value;
     const displayPicture = ev.target[3].files[0];
 
+    if (!displayName || !email || !password || !displayPicture) {
+      setErrMessage("Please fill all the fields");
+      setErr(true);
+      return;
+    }
+
+    if (!displayPicture.type.includes("image")) {
+      setErrMessage("Please upload an image");
+      setErr(true);
+      return;
+    }
+
+    if (displayPicture.size / 1024  > 500) {
+      setErrMessage("Image size should be less than 500KB");
+      setErr(true);
+      return;
+    }
+
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
 
@@ -30,7 +48,7 @@ function Register() {
           setErr(true);
           setErrMessage(error.message);
         },
-        () => {
+        async () => {
           console.log("display picture upload success");
 
           getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
@@ -89,14 +107,14 @@ function Register() {
             <label htmlFor="floatingPassword">Password</label>
           </div>
           <div className="form-floating">
-            <input type="file" className="form-control" id="floatingDisplayPicture" placeholder="Display Picture" />
+            <input type="file" accept='image/*' className="form-control" id="floatingDisplayPicture" placeholder="Display Picture" />
             <label htmlFor="floatingDisplayPicture">
               <span className="fa-solid fa-image"></span>
               &nbsp;
               Add an avatar</label>
           </div>
           <button className="btn btn-primary">Sign Up</button>
-          {err && errMessage && <span>Something went wrong</span>}
+          {err && errMessage && <span>{errMessage}</span>}
           {userCreated &&
             <span>
               <b>User created successfully!

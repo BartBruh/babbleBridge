@@ -14,21 +14,30 @@ function Chat() {
 
   return (
     <div className='chat'>
-      <div className="chatLabel">
-        <button id="toggleSidebarBtn" onClick={toggleSidebar}>
-          <i className={"fa-solid fa-circle-chevron-" + (openSidebar ? "left" : "right")} />
-        </button>
-        <span className="chatInfo">
-          <img src={data.user?.photoURL} alt="" />
-          <p>{data.user?.displayName}</p>
-          <div className="chatIcons">
-            <i className="fa-solid fa-video"></i>
-            <i className="fa-solid fa-circle-info"></i>
+      {data.user.photoURL
+        ? <>
+          <div className="chatLabel">
+            <button id="toggleSidebarBtn" onClick={toggleSidebar}>
+              <i className={"fa-solid fa-circle-chevron-" + (openSidebar ? "left" : "right")} />
+            </button>
+            <span className="chatInfo">
+              <img src={data.user.photoURL} alt="" />
+              <p>{data.user.displayName}</p>
+              <div className="chatIcons">
+                <i className="fa-solid fa-video"></i>
+                <i className="fa-solid fa-circle-info"></i>
+              </div>
+            </span>
           </div>
-        </span>
-      </div>
-      <Messages />
-      <Input />
+          <Messages />
+          <Input />
+        </>
+        : <div id='selectChatLabel'>
+          <p>
+            Search or select a user to chat
+          </p>
+        </div>
+      }
     </div>
   )
 }
