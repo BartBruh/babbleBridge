@@ -7,6 +7,7 @@ import { doc, setDoc } from "firebase/firestore";
 
 function Register() {
   const [err, setErr] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
 
   const [userCreated, setUserCreated] = useState(false);
 
@@ -27,6 +28,7 @@ function Register() {
         (error) => {
           console.log("Error: " + error);
           setErr(true);
+          setErrMessage(error.message);
         },
         () => {
           console.log("display picture upload success");
@@ -56,6 +58,7 @@ function Register() {
       );
     } catch (error) {
       console.log("Error: " + error);
+      setErrMessage(error.message);
       setErr(true);
     }
   }
@@ -93,7 +96,7 @@ function Register() {
               Add an avatar</label>
           </div>
           <button className="btn btn-primary">Sign Up</button>
-          {err && <span>Something went wrong</span>}
+          {err && errMessage && <span>Something went wrong</span>}
           {userCreated &&
             <span>
               <b>User created successfully!

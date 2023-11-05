@@ -3,12 +3,15 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../context/AuthContext';
 import { db } from '../firebase';
 import { ChatContext } from '../context/ChatContext';
+import { OpenSidebarContext } from '../context/OpenSidebarContext';
 
 function Chats() {
   const [chats, setChats] = useState([]);
 
   const { currentUser } = useContext(AuthContext);
   const { dispatch } = useContext(ChatContext);
+
+  const { setOpenSidebar } = useContext(OpenSidebarContext);
 
   useEffect(() => {
     const getChats = () => {
@@ -25,6 +28,7 @@ function Chats() {
   }, [currentUser.uid]);
 
   const handleSelect = (u) => {
+    setOpenSidebar(false);
     dispatch({
       type: "CHANGE_USER",
       payload: u
@@ -38,8 +42,8 @@ function Chats() {
           <div className="userChat" key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)}>
             <img src={chat[1].userInfo?.photoURL} alt="" />
             <div className="userChatInfo">
-              <span>{chat[1].userInfo?.displayName}</span>
-              <p>{chat[1].lastMessage?.text}</p>
+              <p className='name'>{chat[1].userInfo?.displayName}</p>
+              <p className='lastName'>{chat[1].lastMessage?.text}</p>
             </div>
           </div>
         ))

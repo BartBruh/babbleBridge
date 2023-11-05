@@ -2,6 +2,7 @@ import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updat
 import React, { useContext, useState } from 'react'
 import { db } from '../firebase';
 import { AuthContext } from '../context/AuthContext';
+import { ChatContext } from '../context/ChatContext';
 
 function Search() {
   const [username, setUsername] = useState("");
@@ -9,6 +10,8 @@ function Search() {
   const [err, setErr] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
+
+  const { dispatch } = useContext(ChatContext);
 
 
   const handleSearch = async () => {
@@ -80,6 +83,10 @@ function Search() {
       console.log("Error: " + error);
       setErr(true);
     }
+    dispatch({
+      type: "CHANGE_USER",
+      payload: user
+    })
     setUser(null);
     setUsername("");
   }
@@ -94,7 +101,7 @@ function Search() {
           value={username}
         />
       </div>
-      {err && <span>User not found!</span>}
+      {err && <p className='errorText'>User not found!</p>}
       {user && <div className="userChat" onClick={handleSelect}>
         <img src={user.photoURL} alt="" />
         <div className="userChatInfo">

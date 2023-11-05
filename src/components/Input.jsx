@@ -14,8 +14,15 @@ function Input() {
   const { data } = useContext(ChatContext);
 
   const [err, setErr] = useState(false);
+  const [errMessage, setErrMessage] = useState("");
 
   const handleSend = async () => {
+    if (!text && !img) {
+      setErr(true);
+      setErrMessage("Please enter text or select an image to send");
+      return;
+    }
+
     try {
       if (img) {
         const storageRef = ref(storage, uuid());
@@ -24,6 +31,7 @@ function Input() {
           (error) => {
             console.log("Error: " + error);
             setErr(true);
+            setErrMessage(error.message);
           },
           () => {
             getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
@@ -40,7 +48,7 @@ function Input() {
           }
         );
       } else {
-        console.log("inside text without image block");
+        // console.log("inside text without image block");
         await updateDoc(doc(db, "chats", data.chatId), {
           messages: arrayUnion({
             id: uuid(),
@@ -49,10 +57,10 @@ function Input() {
             date: Timestamp.now()
           })
         });
-        console.log("updated text without image");
+        // console.log("updated text without image");
       }
 
-      console.log("adding last message timestamp");
+      // console.log("adding last message timestamp");
       await updateDoc(doc(db, "userChats", currentUser.uid), {
         [data.chatId + ".lastMessage"]: { text },
         [data.chatId + ".date"]: serverTimestamp()
@@ -61,9 +69,10 @@ function Input() {
         [data.chatId + ".lastMessage"]: { text },
         [data.chatId + ".date"]: serverTimestamp()
       });
-      console.log("added last message timestamp");
+      // console.log("added last message timestamp");
     } catch (error) {
       console.log("Error: " + error);
+      setErrMessage(error.message);
       setErr(true);
     }
 
@@ -73,15 +82,14 @@ function Input() {
 
   return (
     <div className='input'>
-      {err && <span className="err">Something went wrong!</span>}
+      {err && errMessage && !text && <p className="err">{errMessage}</p>}
       <input type="text"
         placeholder='Type something...'
-        onChange={e => setText(e.target.value)}
+        onChange={e => { setText(e.target.value); setErr(false); }}
         value={text}
         onKeyDown={e => e.key === "Enter" && handleSend()}
       />
       <div className="send">
-        {/* <span className="fa-solid fa-image"></span> */}
         <input type="file" style={{ display: 'none' }} name="" id="file" onChange={e => setImg(e.target.files[0])} />
         <label htmlFor="file">
           <span className="fa-solid fa-image"></span>

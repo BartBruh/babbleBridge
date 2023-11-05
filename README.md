@@ -10,4 +10,8 @@ Technologies Used:
 * Vite - Build Tool
 * Firebase - Back-End as a Service
 * Bootstrap - Front-End Library
+* FontAwesome - Icons
+* SASS - CSS scripting extension
+* Google Fonts - Fonts used across the website
+* Netlify - Hosting
 * ... yet to find translation api
