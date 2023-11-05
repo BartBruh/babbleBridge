@@ -15,12 +15,14 @@ function Message({ message, animate }) {
   return (
     <>
       {(message.img || message.text) &&
-        <div ref={ref} className={`message ${message.senderId === currentUser.uid && 'owner'}`}>
+        <div ref={ref} className={`message ${message.senderId === currentUser.uid ? 'owner' : ""}`}>
           <div className="messageInfo">
             <img src={message.senderId === currentUser.uid ? currentUser.photoURL : data.user.photoURL}
               alt="" />
-            <span>{message.date.toDate().toDateString().slice(4, 10)}</span>
-            <span>{message.date.toDate().toTimeString().slice(0, 5)}</span>
+            <span className="messageDateTime">
+              <p>{message.date.toDate().toDateString().slice(4, 10)}</p>
+              <p>{message.date.toDate().toTimeString().slice(0, 5)}</p>
+            </span>
           </div>
           <div className="messageContent">
             {message.text && <p>{message.text}</p>}
