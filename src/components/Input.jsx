@@ -30,9 +30,9 @@ function Input() {
       return;
     }
 
-    if (img && img.size / 1024 / 1024 > 1) {
+    if (img && img.size / 1024 > 500) {
       setErr(true);
-      setErrMessage("Image size should be less than 1MB");
+      setErrMessage("Image size should be less than 500KB");
       setImg(null);
       return;
     }
@@ -76,11 +76,11 @@ function Input() {
 
       // console.log("adding last message timestamp");
       await updateDoc(doc(db, "userChats", currentUser.uid), {
-        [data.chatId + ".lastMessage"]: { text },
+        [data.chatId + ".lastMessage"]: { text: text ? text : "[Image]" },
         [data.chatId + ".date"]: serverTimestamp()
       });
       await updateDoc(doc(db, "userChats", data.user.uid), {
-        [data.chatId + ".lastMessage"]: { text },
+        [data.chatId + ".lastMessage"]: { text: text ? text : "[Image]" },
         [data.chatId + ".date"]: serverTimestamp()
       });
       // console.log("added last message timestamp");
@@ -104,7 +104,11 @@ function Input() {
         onKeyDown={e => e.key === "Enter" && handleSend()}
       />
       <div className="send">
-        <input type="file" accept='image/*' style={{ display: 'none' }} name="" id="file" onChange={e => { setImg(e.target.files[0]); setErr(false); }} />
+        <input type="file"
+        accept='image/*'
+        style={{ display: 'none' }}
+        name="" id="file"
+        onChange={e => { setImg(e.target.files[0]); setErr(false); }} />
         <label htmlFor="file">
           <span className="fa-solid fa-image"></span>
         </label>

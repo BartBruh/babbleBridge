@@ -9,27 +9,18 @@ function Message({ message, typingAnimation }) {
 
   const ref = useRef();
 
-  const [chats, setChats] = useState([]);
-
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
 
     if (typingAnimation) {
-      const getChats = () => {
-        const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-          setChats(doc.data());
-          console.log("chats updated in messages: " + chats);
-        });
-
-        return () => {
-          unsub();
-        }
-      }
-      currentUser.uid && getChats();
+      
     }
-  }, [message, currentUser.uid]);
+    
+  }, [message]);
 
-
+  if (typingAnimation) {
+    return <></>
+  }
 
   return (
     <>

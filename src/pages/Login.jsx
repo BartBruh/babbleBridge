@@ -10,7 +10,7 @@ function Login() {
 
   const handleLogin = async (ev) => {
     ev.preventDefault();
-    const email = ev.target[0].value;
+    const email = ev.target[0].value.toLowerCase();
     const password = ev.target[1].value;
 
     try {

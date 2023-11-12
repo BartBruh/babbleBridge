@@ -14,8 +14,10 @@ function Search() {
   const { dispatch } = useContext(ChatContext);
   const { setOpenSidebar } = useContext(OpenSidebarContext);
 
-  const handleSearch = async () => {
-    const q = query(collection(db, "users"), where("displayName", "==", username));
+  const handleSearch = async (e) => {
+    e.preventDefault();
+
+    const q = query(collection(db, "users"), where("username", "==", username.toLowerCase()));
     // console.log("handling search");
 
     try {
@@ -39,9 +41,9 @@ function Search() {
     }
   }
 
-  const handleKey = e => {
-    e.code === "Enter" && handleSearch();
-  }
+  // const handleKey = e => {
+  //   e.code === "Enter" && handleSearch();
+  // }
 
   const handleSelect = async () => {
     // console.log("selected searched user");
@@ -64,7 +66,7 @@ function Search() {
         await updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
             uid: user.uid,
-            displayName: user.displayName,
+            username: user.username,
             photoURL: user.photoURL
           },
           [combinedId + ".date"]: serverTimestamp()
@@ -72,7 +74,7 @@ function Search() {
         await updateDoc(doc(db, "userChats", user.uid), {
           [combinedId + ".userInfo"]: {
             uid: currentUser.uid,
-            displayName: currentUser.displayName,
+            username: currentUser.displayName,
             photoURL: currentUser.photoURL
           },
           [combinedId + ".date"]: serverTimestamp()
@@ -95,19 +97,19 @@ function Search() {
 
   return (
     <div className='search'>
-      <div className="searchForm">
+      <form className="searchForm" onSubmit={handleSearch}>
         <input type="text"
           placeholder='Search for users...'
-          onKeyDown={handleKey}
+          // onKeyDown={handleKey}
           onChange={e => setUsername(e.target.value)}
           value={username}
         />
-      </div>
+      </form>
       {err && <p className='errorText'>User not found!</p>}
       {user && <div className="userChat" onClick={handleSelect}>
         <img src={user.photoURL} alt="" />
         <div className="userChatInfo">
-          <span>{user.displayName}</span>
+          <span>{user.username}</span>
         </div>
       </div>}
     </div>

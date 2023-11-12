@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { createUserWithEmailAndPassword, deleteUser, updateProfile } from "firebase/auth";
 import { auth, db, storage } from '../firebase';
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
+import { ref, uploadBytesResumable, getDownloadURL, deleteObject } from "firebase/storage";
+import { deleteDoc, doc, setDoc } from "firebase/firestore";
 
 function Register() {
   const [err, setErr] = useState(false);
@@ -47,7 +47,7 @@ function Register() {
     }
 
     if (displayPicture.size / 1024 > 500) {
-      setErrMessage("Display Picture size should be less than 500KB");
+      setErrMessage("Image size should be less than 500KB");
       setErr(true);
       return;
     }
@@ -67,11 +67,12 @@ function Register() {
         async () => {
           console.log("display picture upload success");
 
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+          try {
+            const dpDownloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
             await updateProfile(res.user, {
               displayName: username,
-              photoURL: downloadURL
+              photoURL: dpDownloadURL
             })
             console.log("display picture link added to user profile");
 
@@ -79,19 +80,58 @@ function Register() {
               uid: res.user.uid,
               username,
               email,
-              photoURL: downloadURL,
+              photoURL: dpDownloadURL,
             });
             console.log("user info added to users collection");
 
             await setDoc(doc(db, "userChats", res.user.uid), {})
-            
+
             console.log("account created successfully");
             setUserCreated(true);
             setErr(false);
-          });
+
+          } catch (error) {
+
+            // rollback user creation if any error occurs
+
+            console.log("Error occurred in user creation so rolling back: " + error);
+            
+            setErrMessage("User creation failed");
+            setErr(true);
+
+            try {
+              await deleteDoc(doc(db, "users", res.user.uid));
+              console.log("deleted user document from 'users' collection");
+            } catch (error) {
+              console.log("Error in user document deletion from 'users' collection: " + error);
+            }
+
+            try {
+              await deleteDoc(doc(db, "userChats", res.user.uid));
+              console.log("deleted user document from 'userChats' collection");
+            } catch (error) {
+              console.log("Error in user document deletion from 'userChats' collection: " + error);
+            }
+
+            try {
+              await deleteObject(storageRef);
+              console.log("deleted user displayPicture from storage");
+            } catch (error) {
+              console.log("Error in user displayPicture deletion from storage: " + error);
+            }
+
+            try {
+              await deleteUser(res.user);
+              console.log("deleted user");
+            } catch (error) {
+              console.log("Error in user deletion: " + error);
+            }
+
+          }
         }
       );
     } catch (error) {
+      setUserCreated(false);
       console.log("Error: " + error);
       setErrMessage(error.message);
       setErr(true);

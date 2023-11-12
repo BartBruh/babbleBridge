@@ -546,6 +546,29 @@
               }
             }
           }
+
+          &.animation-text {
+            .messageContent {
+              background-color: rgba(255, 255, 255, 0.3);
+              border-radius: 0 10px 10px 10px;
+              height: 44px;
+              display: flex;
+              justify-content: start;
+              align-items: center;
+              padding: 0 10px;
+              
+              p {
+                margin: 0;
+                background-color: transparent;
+                // background-color: rgba(0, 0, 0, 0.2);
+                padding: 9.5px 10px;
+                transform: scale(2);
+                // padding: 0;
+                // padding: 9.5px 20px;
+              }
+            }
+
+          }
         }
       }
 

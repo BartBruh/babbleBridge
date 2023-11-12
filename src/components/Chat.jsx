@@ -22,7 +22,7 @@ function Chat() {
             </button>
             <span className="chatInfo">
               <img src={data.user.photoURL} alt="" />
-              <p>{data.user.displayName}</p>
+              <p>{data.user.username}</p>
               <div className="chatIcons">
                 <i className="fa-solid fa-video"></i>
                 <i className="fa-solid fa-circle-info"></i>
