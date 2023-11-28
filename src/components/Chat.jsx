@@ -5,7 +5,7 @@ import { ChatContext } from '../context/ChatContext';
 import { OpenSidebarContext } from '../context/OpenSidebarContext';
 
 function Chat() {
-  const { data } = useContext(ChatContext);
+  const { activeChatInfo } = useContext(ChatContext);
   const { openSidebar, setOpenSidebar } = useContext(OpenSidebarContext);
 
   const toggleSidebar = () => {
@@ -14,15 +14,20 @@ function Chat() {
 
   return (
     <div className='chat'>
-      {data.user.photoURL
+      {activeChatInfo.otherUserInfo.photoURL
         ? <>
           <div className="chatLabel">
             <button id="toggleSidebarBtn" onClick={toggleSidebar}>
               <i className={"fa-solid fa-circle-chevron-" + (openSidebar ? "left" : "right")} />
             </button>
-            <span className="chatInfo">
-              <img src={data.user.photoURL} alt="" />
-              <p>{data.user.username}</p>
+            <span className="activeChatInfo">
+              {/* <img src={activeChatInfo.otherUserInfo.photoURL} alt="" /> */}
+              {
+                activeChatInfo.otherUserInfo.photoURL
+                  ? <img src={activeChatInfo.otherUserInfo.photoURL} alt="" />
+                  : <i className="fa-solid fa-user"></i>
+              }
+              <p>{activeChatInfo.otherUserInfo.username}</p>
               <div className="chatIcons">
                 <i className="fa-solid fa-video"></i>
                 <i className="fa-solid fa-circle-info"></i>

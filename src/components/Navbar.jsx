@@ -11,7 +11,7 @@ function Navbar() {
   useEffect(() => {
     console.log(currentUser);
   }, []);
-  
+
   const handleLogout = async () => {
     await signOut(auth);
     dispatch({ type: "LOGOUT" });
@@ -21,7 +21,11 @@ function Navbar() {
     <div className='navbar'>
       <span className="logo">BabbleBridge</span>
       <div className="user">
-        <img src={currentUser.photoURL} alt="" />
+        {
+          currentUser.photoURL
+            ? <img src={currentUser.photoURL} alt="" />
+            : <i className="fa-solid fa-user"></i>
+        }
         <span>{currentUser.displayName}</span>
         <button type='button' className='btn btn-secondary' onClick={handleLogout} id='logoutBtn'>Logout</button>
       </div>

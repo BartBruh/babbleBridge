@@ -7,7 +7,7 @@ import { OpenSidebarContext } from '../context/OpenSidebarContext';
 
 function Search() {
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState(null);
+  const [searchedUser, setSearchedUser] = useState(null);
   const [err, setErr] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
@@ -25,11 +25,11 @@ function Search() {
       let found = false;
       querySnapshot.forEach((doc) => {
         found = true;
-        setUser(doc.data());
+        setSearchedUser(doc.data());
         // console.log("found searched user")
       });
       if (!found) {
-        setUser(null);
+        setSearchedUser(null);
         setErr(true);
         // console.log("searched user not found")
       } else {
@@ -49,7 +49,7 @@ function Search() {
     // console.log("selected searched user");
     // check whether the group (chats in firestore) exists
     // if not, create new
-    const combinedId = currentUser.uid > user.uid ? user.uid + currentUser.uid : currentUser.uid + user.uid;
+    const combinedId = currentUser.uid > searchedUser.uid ? searchedUser.uid + currentUser.uid : currentUser.uid + searchedUser.uid;
     // console.log(combinedId);
     try {
       // console.log("in try block")
@@ -60,26 +60,28 @@ function Search() {
         // create a chat in chats collection
         await setDoc(doc(db, "chats", combinedId), { messages: [] });
 
-        // console.log("set combined name doc in chats")
+        console.log("set combined name doc in chats")
 
         // create user chats
         await updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo"]: {
-            uid: user.uid,
-            username: user.username,
-            photoURL: user.photoURL
+            uid: searchedUser.uid,
+            username: searchedUser.username,
+            photoURL: searchedUser.photoURL ? searchedUser.photoURL : "",
+            language: searchedUser.language ? searchedUser.language : "en"
           },
           [combinedId + ".date"]: serverTimestamp()
         })
-        await updateDoc(doc(db, "userChats", user.uid), {
+        await updateDoc(doc(db, "userChats", searchedUser.uid), {
           [combinedId + ".userInfo"]: {
             uid: currentUser.uid,
             username: currentUser.displayName,
-            photoURL: currentUser.photoURL
+            photoURL: currentUser.photoURL ? currentUser.photoURL : "",
+            language: currentUser.language ? currentUser.language : "en"
           },
           [combinedId + ".date"]: serverTimestamp()
         })
-        // console.log("created new chats for both users");
+        console.log("created new chats for both users");
       }
     } catch (error) {
       console.log("Error: " + error);
@@ -87,9 +89,9 @@ function Search() {
     }
     dispatch({
       type: "CHANGE_USER",
-      payload: user
+      payload: searchedUser
     })
-    setUser(null);
+    setSearchedUser(null);
     setUsername("");
     setOpenSidebar(false);
   }
@@ -106,10 +108,15 @@ function Search() {
         />
       </form>
       {err && <p className='errorText'>User not found!</p>}
-      {user && <div className="userChat" onClick={handleSelect}>
-        <img src={user.photoURL} alt="" />
+      {searchedUser && <div className="userChat" onClick={handleSelect}>
+        {/* <img src={user.photoURL} alt="" /> */}
+            {
+              searchedUser.photoURL
+                ? <img src={searchedUser.photoURL} alt="" />
+                : <i className="fa-solid fa-user"></i>
+            }
         <div className="userChatInfo">
-          <span>{user.username}</span>
+          <span>{searchedUser.username}</span>
         </div>
       </div>}
     </div>

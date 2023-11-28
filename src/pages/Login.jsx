@@ -5,6 +5,7 @@ import { auth } from '../firebase';
 
 function Login() {
   const [err, setErr] = useState(false);
+  const [errMsg, setErrMsg] = useState("");
 
   const navigate = useNavigate();
 
@@ -19,6 +20,9 @@ function Login() {
     } catch (error) {
       console.log("Error: " + error);
       setErr(true);
+      error.message == "Firebase: Error (auth/invalid-login-credentials)."
+        ? setErrMsg("Invalid email or password") :
+        setErrMsg(error.message);
     }
   }
 
@@ -33,11 +37,10 @@ function Login() {
             Connecting the World in Real-Time
           </p>
         </span>
-        {/* <span className="logo">BabbleBridge - Connecting the World in Real-Time</span> */}
         <span className="title">Log In</span>
         <form onSubmit={handleLogin}>
           <div className="form-floating">
-            <input type="email" className="form-control" id="floatingEmail" placeholder="name@example.com" />
+            <input type="email" className="form-control" id="floatingEmail" placeholder="name@example.com" ref={input => input && input.focus()} />
             <label htmlFor="floatingEmail">Email address</label>
           </div>
           <div className="form-floating">
@@ -45,7 +48,7 @@ function Login() {
             <label htmlFor="floatingPassword">Password</label>
           </div>
           <button className="btn btn-primary">Log In</button>
-          {err && <span>Something went wrong</span>}
+          {err && <span className='err'>{errMsg}</span>}
           <p>
             Don't have an account?&nbsp;
             <Link to='/register'>Register</Link>

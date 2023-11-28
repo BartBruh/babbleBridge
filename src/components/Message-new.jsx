@@ -4,7 +4,7 @@ import { ChatContext } from '../context/ChatContext';
 
 function Message({ message }) {
   const { currentUser } = useContext(AuthContext);
-  const { data } = useContext(ChatContext);
+  const { activeChatInfo } = useContext(ChatContext);
 
   const ref = useRef();
 
@@ -55,7 +55,7 @@ function Message({ message }) {
   return (
     <div ref={ref} className={`message ${message.senderId === currentUser.uid && 'owner'}`}>
       <div className="messageInfo">
-        <img src={message.senderId === currentUser.uid ? currentUser.photoURL : data.user.photoURL}
+        <img src={message.senderId === currentUser.uid ? currentUser.photoURL : activeChatInfo.otherUserInfo.photoURL}
           alt="" />
         <span>{message.date.toDate().toDateString().slice(4, 10)}</span>
         <span>{message.date.toDate().toTimeString().slice(0, 5)}</span>

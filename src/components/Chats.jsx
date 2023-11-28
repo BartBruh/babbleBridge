@@ -27,20 +27,26 @@ function Chats() {
     currentUser.uid && getChats();
   }, [currentUser.uid]);
 
-  const handleSelect = (u) => {
+  const handleSelect = (otherUserInfo) => {
+    console.log("user selected: " + otherUserInfo.username);
+    console.log(JSON.parse(JSON.stringify(otherUserInfo)))
     setOpenSidebar(false);
     dispatch({
       type: "CHANGE_USER",
-      payload: u
+      payload: otherUserInfo
     })
   }
 
   return (
     <div className='chats'>
       {
-        chats && Object.entries(chats)?.sort((a, b)=> b[1].date - a[1].date).map(chat => (
+        chats && Object.entries(chats)?.sort((a, b) => b[1].date - a[1].date).map(chat => (
           <div className="userChat" key={chat[0]} onClick={() => handleSelect(chat[1].userInfo)}>
-            <img src={chat[1].userInfo?.photoURL} alt="" />
+            {
+              chat[1].userInfo.photoURL
+                ? <img src={chat[1].userInfo.photoURL} alt="" />
+                : <i className="fa-solid fa-user"></i>
+            }
             <div className="userChatInfo">
               <p className='name'>{chat[1].userInfo?.username}</p>
               <p className='lastName'>{chat[1].lastMessage?.text}</p>

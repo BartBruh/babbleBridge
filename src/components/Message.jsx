@@ -1,65 +1,66 @@
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef } from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { ChatContext } from '../context/ChatContext';
 
-// function Message({ message, animate }) {
-function Message({ message, typingAnimation }) {
+const languageNames = new Intl.DisplayNames(["en"], { type: "language" });
+
+function Message({ message }) {
   const { currentUser } = useContext(AuthContext);
-  const { data } = useContext(ChatContext);
+  const { activeChatInfo } = useContext(ChatContext);
+
+  const showTranslationInfo = message && message.translatedText && message.text !== message.translatedText;
 
   const ref = useRef();
 
-  const [animationText, setAnimationText] = useState("");
+  const senderProfileImageSrc = message
+    ? (message.senderId === currentUser.uid ? currentUser.photoURL : activeChatInfo.otherUserInfo.photoURL)
+    : "";
 
   useEffect(() => {
     if (message)
       ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
 
-    if (typingAnimation) {
-      const interval = setInterval(() => {
-        setAnimationText((prev) => {
-          if (prev.length >= 3) {
-            return "";
-          }
-          return prev + "•";
-        });
-      }, 500);
-
-      return () => clearInterval(interval);
-    }
-  }, [message, animationText]);
-
-
-  if (typingAnimation) {
-    return (
-      <div ref={ref} className={`message animation-text`}>
-        <div className="messageInfo">
-          <img src={data.user.photoURL}
-            alt="" />
-        </div>
-        <div className="messageContent">
-          <p>{animationText}</p>
-        </div>
-      </div>
-    )
-  }
-  
   return (
     <>
       {message && (message.img || message.text) &&
         <div ref={ref} className={`message ${message.senderId === currentUser.uid ? 'owner' : ""}`}>
           <div className="messageInfo">
-            <img src={message.senderId === currentUser.uid ? currentUser.photoURL : data.user.photoURL}
-              alt="" />
+            {
+              senderProfileImageSrc
+                ? <img src={senderProfileImageSrc} alt="" />
+                : <i className="fa-solid fa-user"></i>
+            }
             <span className="messageDateTime">
               <p>{message.date.toDate().toDateString().slice(4, 10)}</p>
               <p>{message.date.toDate().toTimeString().slice(0, 5)}</p>
             </span>
           </div>
           <div className="messageContent">
-            {message.text && <p>{message.text}</p>}
+            {
+              message.text &&
+              <div className="messageTextContainer">
+              {
+                message.text &&
+                <div className="originalMessageContainer">
+                  {
+                    message.translationInfo &&
+                    showTranslationInfo &&
+                    <p className="translationInfo">Detected: {languageNames.of(message.translationInfo.detected)}</p>
+                  }
+                  {message.text &&
+                    <p className="messageText">{message.text}</p>}
+                </div>}
+              {
+                message.translationInfo &&
+                showTranslationInfo &&
+                <div className="translatedMessageContainer">
+                  <p className="translationInfo">Translated to: {languageNames.of(message.translationInfo.translatedTo)}</p>
+                  <p className="messageText">{message.translatedText}</p>
+                </div>}
+            </div>}
+
             {message.img && <img src={message.img} alt="" />}
-            {/* {animate && <p className="messageBottom">message is animateed</p>} */}
           </div>
         </div>}
     </>
