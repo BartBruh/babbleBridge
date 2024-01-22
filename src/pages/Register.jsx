@@ -29,6 +29,12 @@ function Register() {
       return;
     }
 
+    if (!displayPicture) {
+      setErrMessage("Please upload a display picture!");
+      setErr(true);
+      return;
+    }
+
     if (username.length < 3 || username.length > 15) {
       setErrMessage("Username should be between 3-15 characters");
       setErr(true);
@@ -165,7 +171,7 @@ function Register() {
             <label htmlFor="floatingDisplayPicture">
               <span className="fa-solid fa-image"></span>
               &nbsp;
-              Add an avatar</label>
+              Add an avatar <span className="requiredFieldSymbol">*</span></label>
           </div>
           <p className='requiredFieldsInfo'><span className="requiredFieldSymbol">*</span> - Required fields</p>
           <button className="btn btn-primary">Sign Up</button>

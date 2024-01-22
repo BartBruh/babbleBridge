@@ -20,29 +20,46 @@ function Input() {
   const [err, setErr] = useState(false);
   const [errMessage, setErrMessage] = useState("");
 
-  let lastTyped = null;
+  // let lastTypedAt = null;
 
-  // const [lastTyped, setLastTyped] = useState(null);
+  const [lastTypedAt, setLastTypedAt] = useState(null);
 
   const updateLastTyped = () => {
-    // setLastTyped(serverTimestamp());
-    lastTyped = serverTimestamp();
+    setLastTypedAt(serverTimestamp());
+    // lastTypedAt = serverTimestamp();
     console.log("updating last typed");
+
+    const lastTyped = {
+      by: currentUser.uid,
+      at: lastTypedAt
+    };
+
     updateDoc(doc(db, "userChats", currentUser.uid), {
-      [activeChatInfo.chatId + ".lastTyped.by"]: currentUser.uid,
-      [activeChatInfo.chatId + ".lastTyped.at"]: lastTyped
+      [activeChatInfo.chatId + ".lastTyped"]: lastTyped
     });
     updateDoc(doc(db, "userChats", activeChatInfo.otherUserInfo.uid), {
-      [activeChatInfo.chatId + ".lastTyped.by"]: currentUser.uid,
-      [activeChatInfo.chatId + ".lastTyped.at"]: lastTyped
+      [activeChatInfo.chatId + ".lastTyped"]: lastTyped
     });
+
+    // updateDoc(doc(db, "userChats", currentUser.uid), {
+    //   [activeChatInfo.chatId + ".lastTyped.by"]: currentUser.uid,
+    //   [activeChatInfo.chatId + ".lastTyped.at"]: lastTypedAt
+    // });
+    // updateDoc(doc(db, "userChats", activeChatInfo.otherUserInfo.uid), {
+    //   [activeChatInfo.chatId + ".lastTyped.by"]: currentUser.uid,
+    //   [activeChatInfo.chatId + ".lastTyped.at"]: lastTypedAt
+    // });
   }
 
   const handleTextInputChange = (e) => {
     setText(e.target.value);
     setErr(false);
 
-    if (serverTimestamp() - lastTyped > 3000)
+    console.log(serverTimestamp())
+
+    // console.log(lastTypedAt, serverTimestamp() - lastTypedAt)
+
+    if (!lastTypedAt || serverTimestamp() - lastTypedAt > 3000)
       updateLastTyped();
   }
 
